@@ -9,8 +9,8 @@ class User(BaseModel):
     email: str
 
 users = [
-    {"id": 1, "name": "Ahsan"},
-    {"id": 2, "name": "Ali"}
+    {"id": 1, "name": "Ahsan", "email": "ahsanchughtai846@gmail.com"},
+    {"id": 2, "name": "Ali", "email": "ahsanchughtai847@gmail.com"}
 ]
 
 @app.get('/test-exception-handling/{user_id}')
@@ -28,3 +28,19 @@ def get_user(user_id: int):
 @app.post('/user')
 def post_user(user:User):
     return user
+
+@app.post('/user-409/{email}')
+def error_409(email: str):
+    for user in users:
+        if user["email"] == email:
+            raise HTTPException(
+                status_code= 409,
+                detail="Dup email found"
+            )
+
+    users.append({
+        "id": len(users),
+        "email": email
+    })
+
+    return users
